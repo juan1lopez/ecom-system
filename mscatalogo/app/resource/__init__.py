@@ -1,0 +1,1 @@
+from .p_resource import producto_blueprint
