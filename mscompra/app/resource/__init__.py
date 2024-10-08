@@ -1,0 +1,1 @@
+from .c_resource import compra_blueprint
