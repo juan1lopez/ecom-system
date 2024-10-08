@@ -7,7 +7,7 @@ producto_service = ProductoService()
 producto_schema = ProductoSchema()
 productos_schema = ProductoSchema(many=True)
 
-@producto_blueprint.route('/', methods=['GET'])
+@producto_blueprint.route('/todos', methods=['GET'])
 def obtener_productos():
     productos = producto_service.obtener_todos()
     return productos_schema.jsonify(productos), 200
