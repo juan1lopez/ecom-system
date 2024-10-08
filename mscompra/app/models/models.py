@@ -6,6 +6,6 @@ from app import db
 class Compra(db.Model):
     __tablename__ = 'compras'
     id: int = db.Column(Integer, primary_key=True)
-    producto_id: int = db.Column(Integer, nullable=False)
+    producto_id: int = db.Column(Integer, db.ForeignKey('productos.id') ,nullable=False)
     fecha_compra: int = db.Column(DateTime, nullable=False)
     direccion_envio: str = db.Column(String, nullable=False)
