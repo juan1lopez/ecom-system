@@ -1,0 +1,1 @@
+from .s_resource import stock_blueprint
