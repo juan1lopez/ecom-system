@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String, DateTime
+from sqlalchemy import Boolean, Column, Integer, String, DateTime, Float
 from dataclasses import dataclass
 from app import db
 
@@ -7,5 +7,5 @@ class Pago(db.Model):
     __tablename__ = 'pagos'
     id: int = db.Column(Integer, primary_key=True)
     producto_id: int = db.Column(Integer, nullable=False)
-    precio: float = db.Column(float, nullable=False)
+    precio: float = db.Column(Float, nullable=False)
     medio_pago: str = db.Column(String, nullable=False)

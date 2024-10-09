@@ -7,5 +7,5 @@ class StockService:
     def obtener_todos(self):
         return StockRepository.all()
 
-    def guardar(self, pago):
-        return StockRepository.save(pago)
+    def guardar(self, stock):
+        return StockRepository.save(stock)

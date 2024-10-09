@@ -21,7 +21,7 @@ def create_app() -> Flask:
     migrate.init_app(app, db)
 
     from app.resource import producto_blueprint
-    app.register_blueprint(producto_blueprint, url_prefix='/prodcutos')
+    app.register_blueprint(producto_blueprint, url_prefix='/productos')
     
     @app.shell_context_processor
     def make_shell_context():

@@ -4,7 +4,7 @@ from marshmallow import validate, fields, Schema, post_load
 class CompraSchema(Schema):
     id = fields.Integer(dump_only=True)
     producto_id = fields.Integer(required=True)
-    fecha_compra = fields.Integer(required=True)
+    fecha_compra = fields.String(required=True)
     direccion_envio = fields.String(required=True)
 
     @post_load
