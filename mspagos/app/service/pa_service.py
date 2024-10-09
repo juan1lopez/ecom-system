@@ -4,8 +4,12 @@ pago_repository = PagoRepository()
 
 class PagoService:
 
-    def obtener_todos(self):
-        return PagoRepository.all()
+    def __init__(self):
+        self.pago_repository = PagoRepository()  # Crea una instancia de PagoRepository
 
-    def guardar(self, pago):
+    def obtener_todos(self):
+        return self.pago_repository.all()  # Llama al método de la instancia
+    
+    @staticmethod
+    def guardar(pago):
         return PagoRepository.save(pago)
