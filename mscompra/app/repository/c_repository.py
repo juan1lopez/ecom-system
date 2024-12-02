@@ -1,14 +1,17 @@
-from typing import List
-from app.models import Compra
 from app import db
+from app.models import Compra
 
 class CompraRepository:
-    @staticmethod
-    def save(compra: Compra) -> Compra:
+
+    def save(self, compra: Compra) -> Compra:
         db.session.add(compra)
         db.session.commit()
         return compra
-    @staticmethod
-    def all() -> List[Compra]:
-        productos = db.session.query(Compra).all()
-        return productos
+
+    def find(self, id: int) -> Compra:
+        return Compra.query.get(id)
+
+    def delete(self, compra: Compra) -> bool:
+        db.session.delete(compra)
+        db.session.commit()
+        return True

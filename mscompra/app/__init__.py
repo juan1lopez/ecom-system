@@ -1,30 +1,26 @@
 from flask import Flask
-from flask_marshmallow import Marshmallow
-import os
-from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from app.config import config
+from app.config.config import config
+from app.config.config_cache import cache_config
+from flask_caching import Cache
+import os
 
 db = SQLAlchemy()
-migrate = Migrate()
-ma = Marshmallow()
+cache = Cache()
 
-def create_app() -> Flask:
-    app_context = os.getenv('FLASK_CONTEXT')
+def create_app():
+    app_context = os.getenv("FLASK_CONTEXT")
+    print(f"app_context: {app_context}")
 
     app = Flask(__name__)
-    config_class = config.factory(app_context if app_context else 'development')
-    app.config.from_object(config_class)
-
-    ma.init_app(app)
-    db.init_app(app)
-    migrate.init_app(app, db)
-
-    from app.resource import compra_blueprint
-    app.register_blueprint(compra_blueprint, url_prefix='/compras')
+    configuration = config[app_context if app_context else 'development']
+    app.config.from_object(configuration)
     
-    @app.shell_context_processor
-    def make_shell_context():
-        return {"app": app, "db": db}
+    db.init_app(app)
+    cache.init_app(app, config=cache_config)
+
+    with app.app_context():
+        from app.resource import compra_blueprint
+        app.register_blueprint(compra_blueprint)
 
     return app
