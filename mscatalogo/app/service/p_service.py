@@ -1,24 +1,39 @@
+from app.models import Producto
 from app.repository import ProductoRepository
+from app import cache
+from flask import abort
 
-producto_repository = ProductoRepository()
+repository = ProductoRepository()
 
 class ProductoService:
 
-    def obtener_todos(self):
-        return producto_repository.all()
+    def find(self, id: int) -> Producto:
+        """
+        Busca un producto por su ID, utilizando cache para mejorar la eficiencia.
+        
+        - Si el producto está en el caché, se devuelve directamente.
+        - Si no está en el caché, se consulta en el repositorio y se almacena en el caché.
+        - Si el producto no existe en el repositorio, devuelve un error 404.
+        """
+        if id is not None: # valido si el id consultado 
+            # Intentar obtener el producto del caché
+            result = cache.get(f"producto_{id}") #busco si el producto esta en cache
+            if result is not None:
+                print(f"Producto {id} obtenido del caché")  # Producto encontrado en cache
+            else:
+                print(f"Producto {id} no está en el caché. Consultando el repositorio...")
+            
+                result = repository.find(id) # Buscar el producto en el repositorio
 
-    def guardar(self, producto):
-        return producto_repository.save(producto)
-    
-    def modificar_cantidad(self, producto_id, nueva_cantidad):
-        # Aquí puedes agregar más lógica de validación
-        if nueva_cantidad < 0:
-            raise ValueError("La cantidad no puede ser negativa.")
-        
-        # Intentar actualizar la cantidad en el repositorio
-        producto_actualizado = producto_repository.update_cantidad(producto_id, nueva_cantidad)
-        
-        if not producto_actualizado:
-            raise Exception("El producto con el ID especificado no existe.")
-        
-        return producto_actualizado
+                if result is None: # Manejar el caso en que el producto no exista
+                    abort(404, description="Product not found")
+                
+                cache.set(f"producto_{id}", result, timeout=30) # Guardar el resultado en el caché con un tiempo de expiración
+                
+        return result
+
+    def guardar(self, producto: Producto) -> Producto:
+        # Guardar el producto en el repositorio
+        producto = repository.save(producto)
+        cache.set(f"producto_{producto.id}", producto, timeout=30)
+        return producto
