@@ -1,1 +1,0 @@
-from .pa_resource import pago_blueprint

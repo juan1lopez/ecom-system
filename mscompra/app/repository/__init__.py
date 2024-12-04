@@ -1,1 +1,0 @@
-from .c_repository import CompraRepository

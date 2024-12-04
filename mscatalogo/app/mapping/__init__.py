@@ -1,1 +1,0 @@
-from .p_schema import ProductoSchema
