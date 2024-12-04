@@ -1,6 +1,6 @@
 FROM python:3.12-slim-bookworm
 
-ENV FLASK_CONTEXT=development
+ENV FLASK_CONTEXT=production
 ENV PYTHONUNBUFFERED=1
 ENV PATH=$PATH:/home/flaskapp/.local/bin
 

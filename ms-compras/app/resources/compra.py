@@ -20,16 +20,6 @@ def comprar():
     logging.info(f"Compra ->: {compra}")
     return compra_schema.dump(compra), status_code
 
-@compra_bp.route('/compras/buscar/<int:id>', methods=['GET'])
-def buscar_compra(id):
-    compra = compra_service.find(id)
-    if compra.id:
-        status_code = 200
-    else:
-        status_code = 500
-    logging.info(f"Compra ->: {compra}")
-    return compra_schema.dump(compra), status_code
-
 @compra_bp.route('/compras/<int:id>', methods=['DELETE'])   
 def borrar_compra(id):
     compra = compra_service.delete(id)

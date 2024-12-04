@@ -1,6 +1,6 @@
 services:
     ecomerce:
-        image: app-commerce:v1.0.1.5
+        image: app-commerce:v1.2.8
         container_name: ecomerce
         ports:
             - 5000:5000
@@ -58,7 +58,7 @@ services:
             - DEV_DATABASE_URI=${DEV_DATABASE_URI}
             - PROD_DATABASE_URI=${PROD_DATABASE_URI}
     mscompras:
-        image: mscompras:v1.0.5
+        image: mscompras:v1.2.2
         container_name: mscompras
         depends_on:
             - ecomerce
@@ -76,7 +76,7 @@ services:
             - DEV_DATABASE_URI=${DEV_DATABASE_URI}
             - PROD_DATABASE_URI=${PROD_DATABASE_URI}
     msinventarios:
-        image: msinventario:v1.0.6
+        image: msinventario:v1.0.7
         container_name: msinventarios
         depends_on:
             - ecomerce

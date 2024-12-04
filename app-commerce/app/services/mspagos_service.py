@@ -17,7 +17,11 @@ class ClientePagosService:
         self.pago.precio = producto.precio
         self.pago.medio_pago = medio_pago
         pago_schema = PagoSchema()
-        r = requests.post(f'{self.URL}pagos/registrar', json=pago_schema.dump(self.pago))
+        data=pago_schema.dump(self.pago)
+        logging.info(data)
+        data.pop("id", None)        
+        data.pop("deleted_at", None)
+        r = requests.post(f'{self.URL}pagos/registrar', json=data)
         if r.status_code == 200:
             logging.info(f"Pago <- {r.json()}")
            

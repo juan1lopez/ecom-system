@@ -8,9 +8,6 @@ class CompraRepository:
         db.session.commit()
         return compra
     
-    def find(self, id: int) -> Compra:
-        return Compra.query.get(id)
-
     def delete(self, id: int) -> Compra:
         compra = Compra.query.get(id)
         compra.deleted_at = db.func.now()

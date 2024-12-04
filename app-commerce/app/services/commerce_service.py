@@ -16,9 +16,12 @@ class CommerceService:
         
         try:
             SagaBuilder.create()\
-                .action(lambda: clienteCompras.comprar(carrito.producto, carrito.direccion_envio), lambda: clienteCompras.cancelar_compra()) \
-                .action(lambda: clientePagos.registrar_pago(carrito.producto, carrito.medio_pago), lambda: clientePagos.cancelar_pago()) \
-                .action(lambda: clienteInventario.retirar_producto(carrito), lambda: clienteInventario.ingresar_producto()) \
+                .action(lambda: clienteCompras.comprar(carrito.producto, carrito.direccion_envio), 
+                        lambda: clienteCompras.cancelar_compra()) \
+                .action(lambda: clientePagos.registrar_pago(carrito.producto, carrito.medio_pago), 
+                        lambda: clientePagos.cancelar_pago()) \
+                .action(lambda: clienteInventario.retirar_producto(carrito), 
+                        lambda: clienteInventario.ingresar_producto()) \
                 .build().execute()
         except SagaError as e:
             logging.error(e)

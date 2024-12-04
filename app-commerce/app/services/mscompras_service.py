@@ -16,8 +16,12 @@ class ClienteComprasService:
         self.compra.producto = producto.id
         self.compra.direccion_envio = direccion_envio
         compra_schema = CompraSchema()
-        r = requests.post(f'{self.URL}compras', json=compra_schema.dump(self.compra), verify=False)
-
+        data=compra_schema.dump(self.compra)
+        logging.info(data)
+        # Eliminamos el campo "id" si está presente
+        data.pop("id", None)        
+        data.pop("deleted_at", None)
+        r = requests.post(f'{self.URL}compras', json=data )
         if r.status_code == 200:
             logging.info(f"Compra <- {r.json()}")
            

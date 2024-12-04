@@ -16,7 +16,12 @@ class ClienteInventarioService:
         self.stock.cantidad = carrito.cantidad
         self.stock.entrada_salida = 2
         stock_schema = StockSchema()
-        r = requests.post(f'{self.URL}inventarios/retirar', json=stock_schema.dump(self.stock))
+        data=stock_schema.dump(self.stock)
+        logging.info(data)
+        # Eliminamos el campo "id" si está presente
+        data.pop("id", None)        
+        data.pop("deleted_at", None)
+        r = requests.post(f'{self.URL}inventarios/retirar', json=data)
 
         if r.status_code == 200:
             logging.info(f"Stock <- {r.json()}")

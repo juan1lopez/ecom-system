@@ -5,23 +5,13 @@ import logging
 from sqlalchemy import func
 from sqlalchemy.exc import SQLAlchemyError 
 from sqlalchemy import func, case
-import threading
 
 class StockRepository:
-    _lock = threading.Lock()  # Lock para sincronizar los hilos
 
     def save(self, stock: Stock) -> Stock:
-        # Adquirir el Lock para garantizar que solo un hilo ejecute esta parte
-        with self._lock:
-            try:
-                # Operación crítica, guardando el stock en la base de datos
-                db.session.add(stock)
-                db.session.commit()
-                return stock
-            except Exception as e:
-                # Deshacer la transacción en caso de error
-                db.session.rollback()
-                raise e
+        db.session.add(stock)
+        db.session.commit()
+        return stock
     
     def cuantity(self, producto_id: int) -> float:
         entradas = db.session.query(

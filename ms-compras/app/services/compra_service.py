@@ -13,15 +13,6 @@ class CompraService:
          cache.set(f"compra_{result.id}", result, timeout=60)
       return result
    
-   def find(self, id: int) -> Compra:
-      result = cache.get(f"compra_{id}")
-      if result is None:
-         # Si no está en caché, consulta la base de datos y actualiza el caché
-         result = repository.find(id)
-         if result:
-            cache.set(f"compra_{id}", result, timeout=60)
-      return result
-
    def delete(self, id: int) -> Compra:
       if id:
          cache.delete(f"compra_{id}")
