@@ -21,7 +21,9 @@ COPY ./app.py .
 ADD requirements.txt ./requirements.txt
 
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install gevent==24.10.3 gunicorn==23.0.0
 
 EXPOSE 5000
+CMD ["gunicorn", "--workers", "8", "--threads", "4","--log-level", "INFO", "--bind", "0.0.0.0:5000", "app:create_app()"]
 
-CMD [ "python", "./app.py" ]
+#CMD [ "python", "./app.py" ]

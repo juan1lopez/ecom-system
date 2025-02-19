@@ -1,6 +1,6 @@
 services:
     ecomerce:
-        image: app-commerce:v1.2.8
+        image: app-commerce:v1.2.9.3
         container_name: ecomerce
         ports:
             - 5000:5000
@@ -13,13 +13,26 @@ services:
             - REDIS_PORT=${REDIS_PORT}
             - REDIS_PASSWORD=${REDIS_PASSWORD}
             - REDIS_DB=${REDIS_DB}
-            # el valor de MSCATALOGO_URL, MSPAGOS_URL, MSCOMPRAS_URL, MSINVENTARIOS_URL = al container_name con el puerto 5000 ejemplo http://mscatalogo:5000
-            # desde el microservicio ecomerce se puede acceder a los microservicios mscatalogo, mspagos, mscompras, msinventarios por el container_name:puerto
-            # desde el host se accede a los microservicios como http://localhost:puerto ejemplo http://localhost:5001 para mscatalogo, http://localhost:5002 para mspagos, http://localhost:5003 para mscompras, http://localhost:5004 para msinventarios
             - MSCATALOGO_URL=${MSCATALOGO_URL}
             - MSPAGOS_URL=${MSPAGOS_URL}
             - MSCOMPRAS_URL=${MSCOMPRAS_URL}
             - MSINVENTARIOS_URL=${MSINVENTARIOS_URL}
+            - TEST_DATABASE_URI=${TEST_DATABASE_URI}
+            - DEV_DATABASE_URI=${DEV_DATABASE_URI}
+            - PROD_DATABASE_URI=${PROD_DATABASE_URI}
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.ecomerce.rule=Host(`app.ecommerce.local`)"
+            - "traefik.http.services.ecomerce.loadbalancer.server.port=5000"
+            - "traefik.http.routers.ecomerce.tls=true"
+            - "traefik.docker.network=mired"
+        
+        extra_hosts:
+            - catalogo.ecommerce.local:172.20.0.1
+            - pagos.ecommerce.local:172.20.0.1
+            - compras.ecommerce.local:172.20.0.1
+            - inventarios.ecommerce.local:172.20.0.1
+
     mscatalogo:
         image: mscatalogo:v1.0.3
         container_name: mscatalogo
@@ -39,6 +52,17 @@ services:
             - TEST_DATABASE_URI=${TEST_DATABASE_URI}
             - DEV_DATABASE_URI=${DEV_DATABASE_URI}
             - PROD_DATABASE_URI=${PROD_DATABASE_URI}
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.mscatalogo.rule=Host(`catalogo.ecommerce.local`)"
+            - "traefik.http.services.mscatalogo.loadbalancer.server.port=5000"
+            - "traefik.http.routers.mscatalogo.tls=true"
+            - "traefik.docker.network=mired"
+            # Circuit Breakers
+            - "traefik.http.middlewares.mscatalogo.circuitbreaker.expression=LatencyAtQuantileMS(75.0) > 100"
+            - "traefik.http.middlewares.mscatalogo.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.25"
+            - "traefik.http.middlewares.mscatalogo.circuitbreaker.expression=NetworkErrorRatio() > 0.25"
+        
     mspagos:
         image: mspagos:v1.0.4
         container_name: mspagos
@@ -57,6 +81,16 @@ services:
             - TEST_DATABASE_URI=${TEST_DATABASE_URI}
             - DEV_DATABASE_URI=${DEV_DATABASE_URI}
             - PROD_DATABASE_URI=${PROD_DATABASE_URI}
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.mspagos.rule=Host(`pagos.ecommerce.local`)"
+            - "traefik.http.services.mspagos.loadbalancer.server.port=5000"
+            - "traefik.http.routers.mspagos.tls=true"
+            - "traefik.docker.network=mired"
+            # Circuit Breakers
+            - "traefik.http.middlewares.mspagos.circuitbreaker.expression=LatencyAtQuantileMS(75.0) > 150"
+            - "traefik.http.middlewares.mspagos.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.25"
+            - "traefik.http.middlewares.mspagos.circuitbreaker.expression=NetworkErrorRatio() > 0.25"
     mscompras:
         image: mscompras:v1.2.2
         container_name: mscompras
@@ -75,6 +109,16 @@ services:
             - TEST_DATABASE_URI=${TEST_DATABASE_URI}
             - DEV_DATABASE_URI=${DEV_DATABASE_URI}
             - PROD_DATABASE_URI=${PROD_DATABASE_URI}
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.mscompras.rule=Host(`compras.ecommerce.local`)"
+            - "traefik.http.services.mscompras.loadbalancer.server.port=5000"
+            - "traefik.http.routers.mscompras.tls=true"
+            - "traefik.docker.network=mired"
+            # Circuit Breakers
+            - "traefik.http.middlewares.mscompras.circuitbreaker.expression=LatencyAtQuantileMS(75.0) > 150"
+            - "traefik.http.middlewares.mscompras.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.25"
+            - "traefik.http.middlewares.mscompras.circuitbreaker.expression=NetworkErrorRatio() > 0.25"
     msinventarios:
         image: msinventario:v1.0.7
         container_name: msinventarios
@@ -93,6 +137,17 @@ services:
             - TEST_DATABASE_URI=${TEST_DATABASE_URI}
             - DEV_DATABASE_URI=${DEV_DATABASE_URI}
             - PROD_DATABASE_URI=${PROD_DATABASE_URI}
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.msinventarios.rule=Host(`inventarios.ecommerce.local`)"
+            - "traefik.http.services.msinventarios.loadbalancer.server.port=5000"
+            - "traefik.http.routers.msinventarios.tls=true"
+            - "traefik.docker.network=mired"
+            # Circuit Breakers
+            - "traefik.http.middlewares.msinventarios.circuitbreaker.expression=LatencyAtQuantileMS(75.0) > 150"
+            - "traefik.http.middlewares.msinventarios.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.25"
+            - "traefik.http.middlewares.msinventarios.circuitbreaker.expression=NetworkErrorRatio() > 0.25"
+
 # Todos los microservicios y servicios (redis, postgresql) deben estar en la misma red
 networks:
     mired:

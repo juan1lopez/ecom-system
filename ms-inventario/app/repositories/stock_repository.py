@@ -23,21 +23,3 @@ class StockRepository:
         ).filter(Stock.producto == producto_id).scalar() or 0
 
         return entradas - salidas
-                   
-
-
-
-
-
-
-# 50 compras por segundo
-#1)test de carga con k6 de servidor de desarrollo
-# docker build -f ./Dockerfile.gunicorn -t app-commerce:gunicorn
-# test de carga con k6 de servidor de gunicorn
-# docker build -f ./Dockerfile -t app-commerce:uwsgi
-# test de carga con k6 de servidor de uwsgi
-# test de carga aplicando traefik  con balanceo de carga y escalado horizontal
-
-
-
-#mkcert
