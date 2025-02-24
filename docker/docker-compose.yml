@@ -1,6 +1,7 @@
 services:
     ecomerce:
-        image: app-commerce:v1.2.9.3
+        #image: app-commerce:v1.2.9.3
+        image: app-commerce:v2.0
         container_name: ecomerce
         ports:
             - 5000:5000
@@ -34,7 +35,8 @@ services:
             - inventarios.ecommerce.local:172.20.0.1
 
     mscatalogo:
-        image: mscatalogo:v1.0.3
+        #image: mscatalogo:v1.0.3
+        image: mscatalogo:v2.0
         container_name: mscatalogo
         depends_on:
             - ecomerce
@@ -64,7 +66,8 @@ services:
             - "traefik.http.middlewares.mscatalogo.circuitbreaker.expression=NetworkErrorRatio() > 0.25"
         
     mspagos:
-        image: mspagos:v1.0.4
+        #image: mspagos:v1.0.4
+        image: mspagos:v2.0
         container_name: mspagos
         depends_on:
             - ecomerce
@@ -92,7 +95,8 @@ services:
             - "traefik.http.middlewares.mspagos.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.25"
             - "traefik.http.middlewares.mspagos.circuitbreaker.expression=NetworkErrorRatio() > 0.25"
     mscompras:
-        image: mscompras:v1.2.2
+        #image: mscompras:v1.2.2
+        image: mscompras:v2.0
         container_name: mscompras
         depends_on:
             - ecomerce
@@ -120,7 +124,8 @@ services:
             - "traefik.http.middlewares.mscompras.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.25"
             - "traefik.http.middlewares.mscompras.circuitbreaker.expression=NetworkErrorRatio() > 0.25"
     msinventarios:
-        image: msinventario:v1.0.7
+        #image: msinventario:v1.0.7
+        image: msinventario:v2.1
         container_name: msinventarios
         depends_on:
             - ecomerce
