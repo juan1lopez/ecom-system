@@ -8,8 +8,9 @@ const statusTrend = new Trend('status_codes');
 // Configuración de la prueba
 export const options = {
     stages: [
-        { duration: '5s', target: 5 },  // Escalar hasta 10 usuarios simultáneos en 5 segundos
-        { duration: '5s', target: 0 },   // Reducir a 0 usuarios simultáneos en 5 segundos
+        { duration: '15s', target: 50 },  // Escalar hasta 10 usuarios simultáneos en 5 segundos
+        { duration: '30s', target: 50 },
+        { duration: '15s', target: 0 }// Reducir a 0 usuarios simultáneos en 5 segundos
     ],
 };
 
@@ -32,7 +33,7 @@ const headers = {
 };
 
 export default function () {
-    const BASE_URL = 'http://localhost:5000/api/v1/commerce/comprar'; // Endpoint de compras
+    const BASE_URL = 'http://app.ecommerce.local/api/v1/commerce/comprar'; // Endpoint de compras
 
     // Enviar la solicitud POST para simular una compra
     const res = http.post(BASE_URL, payload, { headers });
